@@ -1,14 +1,21 @@
 <ng-container *ngIf="(readingList$ | async).length > 0; else empty">
   <div class="reading-list-item" *ngFor="let book of readingList$ | async">
+   
     <div>
       <img class="reading-list-item--cover" [src]="book.coverUrl" alt="" />
     </div>
     <div class="reading-list-item--details">
-      <strong class="reading-list-item--details--title">{{
-        book.title
-      }}</strong>
+      <strong class="reading-list-item--details--title">{{ book.title }}</strong>
       <div class="reading-list-item--details--author">
-        {{ book.authors.join(',') }}
+        {{ book.authors?.join(',') }}
+      </div>
+      <!-- //try to do on tooltip -->
+      <div
+        *ngIf="book.finished"
+        class="reading-list-item--details--finished-date"
+        data-testing="finished-date"
+      >
+        <strong><i>Finished on {{ book.finishedDate | date: 'M/d/yyyy' }}</i></strong>
       </div>
     </div>
     <div>
@@ -16,11 +23,20 @@
         mat-icon-button
         color="warn"
         [attr.aria-label]="'Remove ' + book.title + ' from reading list'"
-        (click)="removeFromReadingList(book)"
+        (click)="removeFromReadingList(book);"
       >
         <mat-icon>remove_circle</mat-icon>
       </button>
-    </div>
+   </div>
+   <div>
+    <button
+    mat-icon-button
+    [attr.aria-label]="'Mark as Finish ' + book.title + ' from reading list'"
+    (click)="markBookAsFinished(book)"
+  >
+    <mat-icon [ngStyle]="{'color':book.finished ? 'green':'red'}">done</mat-icon>
+  </button>
+ </div>
   </div>
 </ng-container>
 <ng-template #empty>
