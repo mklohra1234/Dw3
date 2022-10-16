@@ -13,7 +13,7 @@ import { BookSearchComponent } from './book-search.component';
 import { clearSearch, searchBooks } from '@tmo/books/data-access';
 import { MockStore, provideMockStore } from '@ngrx/store/testing';
 
-describe('ProductsListComponent', () => {
+describe('Book Search Component', () => {
   let component: BookSearchComponent;
   let fixture: ComponentFixture<BookSearchComponent>;
   let store: MockStore;
@@ -37,18 +37,17 @@ describe('ProductsListComponent', () => {
     expect(component).toBeDefined();
   });
 
-  describe('Handle search term change', () => {
-    it('should dispatch searchBooks action when not empty as per  after 500ms debounceTime', fakeAsync(() => {
+  describe('Handle instant search change', () => {
+    it('should dispatch an action as on typing on the form control considering debounce time', fakeAsync(() => {
       component.searchForm.setValue({ term: 'java' });
       tick(300);
       expect(store.dispatch).not.toHaveBeenCalled();
-
       component.searchForm.setValue({ term: 'javac' });
       tick(500);
       expect(store.dispatch).toHaveBeenCalledWith(searchBooks({ term: 'javac' }));
     }));
 
-    it('should not dispatch searchBooks action as per  500ms debounceTime', fakeAsync(() => {
+    it('should not dispatch searchBooks action when search field is not changed after 500 ms debounce', fakeAsync(() => {
       component.searchForm.setValue({ term: 'java' });
       tick(500);
       expect(store.dispatch).toHaveBeenNthCalledWith(
