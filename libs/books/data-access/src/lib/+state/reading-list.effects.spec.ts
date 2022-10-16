@@ -11,7 +11,7 @@ import { API_PATH } from '../constants';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 
-describe('ToReadEffects', () => {
+describe('Test Suite for Reading list effect ', () => {
   let actions: ReplaySubject<any>;
   let effects: ReadingListEffects;
   let httpMock: HttpTestingController;
@@ -30,8 +30,8 @@ describe('ToReadEffects', () => {
     httpMock = TestBed.inject(HttpTestingController);
   });
 
-  describe('loadReadingList$', () => {
-    it('should work', done => {
+  describe('Test suite to load ReadingList$', () => {
+    it('should load reading list', done => {
       actions = new ReplaySubject();
       actions.next(ReadingListActions.init());
 
