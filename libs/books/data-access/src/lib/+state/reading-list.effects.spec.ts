@@ -6,7 +6,7 @@ import { HttpTestingController } from '@angular/common/http/testing';
 
 import {
   SharedTestingModule,
-  createReadingListItem
+  createReadingListItem,
 } from '@tmo/shared/testing';
 import { ReadingListEffects } from './reading-list.effects';
 import * as ReadingListActions from './reading-list.actions';
@@ -23,8 +23,8 @@ describe('ToReadEffects', () => {
       providers: [
         ReadingListEffects,
         provideMockActions(() => actions),
-        provideMockStore()
-      ]
+        provideMockStore(),
+      ],
     });
 
     effects = TestBed.inject(ReadingListEffects);
@@ -32,11 +32,11 @@ describe('ToReadEffects', () => {
   });
 
   describe('loadReadingList$', () => {
-    it('should work', done => {
+    it('should work', (done) => {
       actions = new ReplaySubject();
       actions.next(ReadingListActions.init());
 
-      effects.loadReadingList$.subscribe(action => {
+      effects.loadReadingList$.subscribe((action) => {
         expect(action).toEqual(
           ReadingListActions.loadReadingListSuccess({ list: [] })
         );
@@ -48,19 +48,22 @@ describe('ToReadEffects', () => {
   });
 
   describe('markBookAsFinished$', () => {
-    it('should dispatch confirmedMarkBookAsFinished action when API returns success response', done => {
-      actions = new ReplaySubject();
-      const item = {
+    let item;
+    beforeEach(() => {
+      item = {
         ...createReadingListItem('A'),
         finished: true,
-        finishedDate: '2021-03-03T00:00:00.000Z'
+        finishedDate: '2021-03-03T00:00:00.000Z',
       };
-      actions.next(ReadingListActions.markBookAsFinished({ item }));
+    });
 
-      effects.markBookAsFinished$.subscribe(action => {
+    it('should dispatch confirmedMarkBookAsFinished action when API returns success response', (done) => {
+      actions = new ReplaySubject();
+      actions.next(ReadingListActions.markBookAsFinished({ item }));
+      effects.markBookAsFinished$.subscribe((action) => {
         expect(action).toEqual(
           ReadingListActions.confirmedMarkBookAsFinished({
-            item
+            item,
           })
         );
         done();
@@ -71,19 +74,19 @@ describe('ToReadEffects', () => {
         .flush({ ...item });
     });
 
-    it('should dispatch failedMarkBookAsFinished action when API returns failure response', done => {
+    it('should dispatch failedMarkBookAsFinished action when API returns failure response', (done) => {
       actions = new ReplaySubject();
       const item = {
         ...createReadingListItem('A'),
         finished: true,
-        finishedDate: '2021-03-03T00:00:00.000Z'
+        finishedDate: '2021-03-03T00:00:00.000Z',
       };
       actions.next(ReadingListActions.markBookAsFinished({ item }));
 
-      effects.markBookAsFinished$.subscribe(action => {
+      effects.markBookAsFinished$.subscribe((action) => {
         expect(action).toEqual(
           ReadingListActions.failedMarkBookAsFinished({
-            item
+            item,
           })
         );
         done();
@@ -93,7 +96,7 @@ describe('ToReadEffects', () => {
         .expectOne(`${API_PATH.READING_LIST}/A/finished`)
         .error(new ErrorEvent('HttpErrorResponse'), {
           status: 500,
-          statusText: 'some error'
+          statusText: 'some error',
         });
     });
   });
