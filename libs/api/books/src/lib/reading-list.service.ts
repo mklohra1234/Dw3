@@ -29,12 +29,12 @@ export class ReadingListService {
     });
   }
 
-   async markAsFinished(item: ReadingListItem): Promise<void> {
+   async markAsFinished(item: ReadingListItem,finishedDate: string): Promise<void> {
     this.storage.update((list) => {
       return list.map((bookList) => {
-        return bookList.bookId !== item.bookId
-         ? bookList:bookList=item
+        return bookList.bookId !== item.bookId ? bookList : { ...bookList, finishedDate: finishedDate, finished: true };
        });
     });
   }
+
 }

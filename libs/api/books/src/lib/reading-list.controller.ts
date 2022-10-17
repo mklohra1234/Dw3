@@ -23,6 +23,6 @@ export class ReadingListController {
     
   @Put('/reading-list/:id/finished')
   async markBookAsFinished(@Body() item: ReadingListItem) {
-    return await this.readingList.markAsFinished(item);
+    return await this.readingList.markAsFinished(item,item.finishedDate);
   }
 }
