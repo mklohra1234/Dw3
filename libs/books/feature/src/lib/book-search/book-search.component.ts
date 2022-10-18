@@ -1,30 +1,47 @@
-import { Component } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Store } from '@ngrx/store';
 import {
   addToReadingList,
   clearSearch,
   getAllBooks,
-  searchBooks
+  searchBooks,
 } from '@tmo/books/data-access';
 import { FormBuilder } from '@angular/forms';
 import { Book } from '@tmo/shared/models';
+import { debounceTime, distinctUntilChanged, takeUntil } from 'rxjs/operators';
+import { Observable, Subject, Subscription } from 'rxjs';
 
 @Component({
   selector: 'tmo-book-search',
   templateUrl: './book-search.component.html',
-  styleUrls: ['./book-search.component.scss']
+  styleUrls: ['./book-search.component.scss'],
 })
-
-export class BookSearchComponent {
+export class BookSearchComponent implements OnInit, OnDestroy {
   books$ = this.store.select(getAllBooks);
+  subscription = new Subscription();
   searchForm = this.fb.group({
-    term: ''
+    term: '',
   });
+  private ngUnsubscribe: Subject<void>;
+
 
   constructor(
     private readonly store: Store,
-    private readonly fb: FormBuilder
-  ) {}
+    private readonly fb: FormBuilder,
+  ) {
+    this.ngUnsubscribe = new Subject<void>()
+
+  }
+
+  ngOnInit(): void {
+    this.searchForm.valueChanges
+      .pipe(
+        takeUntil(this.ngUnsubscribe.asObservable()),
+        debounceTime(500),
+        distinctUntilChanged((prev, next) => prev.term === next.term)
+      )
+      .subscribe(() => this.searchBooks());
+  }
 
   addBookToReadingList(book: Book) {
     this.store.dispatch(addToReadingList({ book }));
@@ -32,7 +49,6 @@ export class BookSearchComponent {
 
   searchExample() {
     this.searchForm.controls.term.setValue('javascript');
-    this.searchBooks();
   }
 
   searchBooks() {
@@ -41,5 +57,10 @@ export class BookSearchComponent {
     } else {
       this.store.dispatch(clearSearch());
     }
+  }
+
+  ngOnDestroy(): void {
+    this.ngUnsubscribe.next();
+    this.ngUnsubscribe.unsubscribe();
   }
 }
