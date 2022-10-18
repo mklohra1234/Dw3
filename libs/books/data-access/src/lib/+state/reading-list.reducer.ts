@@ -63,7 +63,10 @@ const readingListReducer = createReducer(
     readingListAdapter.updateOne(
       {
         id: item.bookId,
-        changes: item
+        changes: {
+          ...item,
+        finished:true
+        }
       },
       state
     )

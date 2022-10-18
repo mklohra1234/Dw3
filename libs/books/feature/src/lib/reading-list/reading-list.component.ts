@@ -26,7 +26,6 @@ export class ReadingListComponent {
       markBookAsFinished({
         item: {
           ...item,
-          finished: true,
           finishedDate: new Date().toISOString()
         }
       })
