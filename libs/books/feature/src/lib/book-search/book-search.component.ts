@@ -59,7 +59,7 @@ export class BookSearchComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    this.ngUnsubscribe.next();
-    this.ngUnsubscribe.unsubscribe();
+    this.ngUnsubscribe$.next();
+    this.ngUnsubscribe$.unsubscribe();
   }
 }
