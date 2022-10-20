@@ -22,29 +22,24 @@ export class BookSearchComponent implements OnInit, OnDestroy {
   searchForm = this.fb.group({
     term: '',
   });
-  private ngUnsubscribe: Subject<void>;
+  private ngUnsubscribe$: Subject<void>;
 
 
   constructor(
     private readonly store: Store,
     private readonly fb: FormBuilder,
   ) {
-    this.ngUnsubscribe = new Subject<void>()
-
-  }
+   }
 
   ngOnInit(): void {
-    this.searchForm.valueChanges
-      .pipe(
-        takeUntil(this.ngUnsubscribe.asObservable()),
-        debounceTime(500),
-        distinctUntilChanged((prev, next) => prev.term === next.term)
-      )
-      .subscribe(() => this.searchBooks());
-  }
+    this.searchForm.get('term').valueChanges
+    .pipe(
+      debounceTime(500),
+      distinctUntilChanged(),
+      takeUntil(this.ngUnsubscribe$)
+    )
+    .subscribe(() => this.searchBooks());
 
-  get searchTerm(): string {
-    return this.searchForm.value.term;
   }
 
   addBookToReadingList(book: Book) {
@@ -57,7 +52,7 @@ export class BookSearchComponent implements OnInit, OnDestroy {
 
   searchBooks() {
     if (this.searchForm.value.term) {
-      this.store.dispatch(searchBooks({ term: this.searchTerm }));
+      this.store.dispatch(searchBooks({ term: this.searchForm.value.term}));
     } else {
       this.store.dispatch(clearSearch());
     }
