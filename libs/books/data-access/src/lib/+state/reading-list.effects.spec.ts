@@ -9,7 +9,7 @@ import { ReadingListEffects } from './reading-list.effects';
 import * as ReadingListActions from './reading-list.actions';
 import { API_PATH } from '../constants';
 
-describe('ToReadEffects', () => {
+describe('To Initialize effects ', () => {
   let actions: ReplaySubject<any>;
   let effects: ReadingListEffects;
   let httpMock: HttpTestingController;
